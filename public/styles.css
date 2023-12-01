@@ -1,0 +1,66 @@
+body{
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: none;
+}
+
+body::after{
+    content: "Collaborative Cursors";
+    position: absolute;
+    top: 10px;
+    font-size: 2rem;
+    padding: 1.5rem 5rem;
+    font-family: sans-serif;
+    background: white;
+    border-radius: 10px;
+    pointer-events: none;
+    font-weight: 700;
+}
+
+#canvas{
+    height: 1000vh;
+    width: 1000vw;
+    position: absolute;
+    background-color: #f0f0f0;
+    background-image: radial-gradient(rgba(0,0,0,0.1) 2px, #f0f0f0 2px);
+    background-size: 40px 40px;
+}
+
+.cursor {
+    height: 20px;
+    width: 20px;
+    position: fixed;
+    z-index: 10;
+    transform:translate(-40%,-20%) rotate(-15deg);
+    top: 10;
+    left: 10;
+    pointer-events: none;
+}
+
+.cursor-info {
+    position: absolute;
+    font-family: sans-serif;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    top: 10px;
+    left: 5px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    color: white;
+    transform: rotate(15deg);
+}
+
+#username-input{
+    position: absolute;
+    bottom: 5%;
+    z-index: 20;
+    padding: 1rem 1.5rem;
+    border: none;
+    
+}

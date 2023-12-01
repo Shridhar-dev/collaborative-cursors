@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="./styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <input id="username-input" placeholder="username"/>
+    <div id="canvas">
+        
+    </div>
+    
+    <svg style="display: none;" id="cursor-template" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier"> 
+            <path id="cursor-template-path" d="M7.92098 2.29951C6.93571 1.5331 5.5 2.23523 5.5 3.48349V20.4923C5.5 21.9145 7.2945 22.5382 8.17661 21.4226L12.3676 16.1224C12.6806 15.7267 13.1574 15.4958 13.6619 15.4958H20.5143C21.9425 15.4958 22.5626 13.6887 21.4353 12.8119L7.92098 2.29951Z" fill="#ff0000"></path>
+        </g>
+        
+    </svg>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="./client/canvas.js"></script>
+    <script>
+        
+        const socket = io();
+        const canvas = document.getElementById("canvas");
+
+        function getRandomColor(){
+            let val1 = Math.floor((Math.random() * 255-180))+180;
+            let val2 = Math.floor((Math.random() * 255-180))+180;
+            let val3 = Math.floor((Math.random() * 255-180))+180;
+
+            return {
+                val1,val2,val3
+            };
+        }
+
+        function createCursor(id, other, name="user", x ,y) {
+            const iconContainer = document.createElement("div");
+            const iconUserInfo = document.createElement("p");
+            iconUserInfo.innerText = name;
+            iconUserInfo.classList = "cursor-info";
+            
+
+            const iconSvgTemplate = document.getElementById("cursor-template");
+            const iconPathTemplate = document.getElementById("cursor-template-path");
+
+            const iconSvg = iconSvgTemplate.cloneNode(true)
+            const iconPath = iconPathTemplate.cloneNode(true);
+            iconSvg.style.display = "block"
+            iconContainer.style.display = "block"
+            iconContainer.id = id
+            if(other) iconContainer.style.position="absolute";
+            iconContainer.classList.add('cursor');
+            let {val1,val2,val3} = getRandomColor();
+            iconPath.setAttribute('fill', `rgb(${val1},${val2},${val3})`);
+            iconUserInfo.style.background = `rgb(${val1},${val2},${val3})`;
+
+            iconSvg.appendChild(iconPath)
+            iconContainer.appendChild(iconUserInfo)
+            iconContainer.appendChild(iconSvg)
+            console.log("X: ", x, id)
+            if(x && y){
+                iconContainer.style.left = x;
+                iconContainer.style.top = y;
+            }
+            return iconContainer;
+        }
+
+        socket.on("connect",()=>{
+            const cursor = createCursor(socket.id);
+            canvas.onmousemove = (e) =>{
+                cursor.style.top = Math.abs(e.clientY) + 'px';
+                cursor.style.left = Math.abs(e.clientX) + 'px' ;
+                socket.emit('cursorMoved', 
+                    {id:socket.id,x:Math.abs(e.offsetX) + 'px',y:Math.abs(e.offsetY) + 'px'}
+                );
+            }
+
+            canvas.appendChild(cursor)
+        })
+
+        socket.on("cursorJoined",(id)=>{    
+            const cursor = createCursor(id, true)
+            canvas.appendChild(cursor)
+        })
+
+        socket.on("allCursors", (data)=>{
+            
+            for (let key in data) {
+                if(key === socket.id) continue;
+
+                const cursor = createCursor(key, true,"user", data[key].x, data[key].y)
+                
+                canvas.appendChild(cursor)
+            }
+        })
+
+        socket.on("cursorPositionUpdate",(data)=>{
+            if(socket.id === data.id) return;
+            const targetCursor = document.getElementById(data.id);        
+            targetCursor.style.top = data.y;
+            targetCursor.style.left = data.x ;   
+        })
+
+        socket.on("cursorNameChanged",(data)=>{
+            if(socket.id === data.id) return;
+            const targetCursor = document.getElementById(data.id);      
+            targetCursor.firstChild.innerText = data.name   
+        })
+
+        document.getElementById("username-input").oninput = (e) =>{
+            document.getElementById(socket.id).firstChild.innerText = e.target.value
+            socket.emit('cursorNameChange',e.target.value);
+        }
+
+        socket.on("cursorLeft",(id)=>{
+            console.log("Cursor Left")
+            const targetCursor = document.getElementById(id)
+            canvas.removeChild(targetCursor) 
+        })
+    </script>
+</body>
+</html>
