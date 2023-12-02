@@ -7,6 +7,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"))
 
 
+app.get('/api/hi', async (req, res) => {
+	res.end("Hello")
+});
 const server = app.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });
