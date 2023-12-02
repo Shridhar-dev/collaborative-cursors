@@ -1,15 +1,17 @@
 import express from 'express';
+import path from 'path'
 import { Server } from 'socket.io';
+import {fileURLToPath} from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"))
 
+app.use('/', express.static(path.resolve(__dirname, 'public')));
 
-app.get('/api/hi', async (req, res) => {
-	res.end("Hello")
-});
 const server = app.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });
