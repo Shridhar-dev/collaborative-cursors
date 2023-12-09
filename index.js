@@ -20,6 +20,7 @@ const io = new Server(server);
 
 
 let cursors = {}
+let polygons = []
 
 io.on('connection', (socket) => {
     socket.join('local');
@@ -41,6 +42,11 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on("drawing",(data)=>{
+      polygons.push(data)
+      socket.broadcast.emit('drew', data);
+    })
+
     socket.on("cursorNameChange",(name)=>{
       io.emit('cursorNameChanged', {
         ...cursors[socket.id], 
@@ -53,7 +59,9 @@ io.on('connection', (socket) => {
       }
     })
 
-    socket.emit("allCursors", cursors)
+    
+
+    socket.emit("allCursors", [cursors,polygons])
 
     socket.on("disconnect", ()=>{
       delete cursors[socket.id];

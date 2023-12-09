@@ -1,5 +1,12 @@
+import { isDrawing } from "./states.js";
+
 const socket = io();
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas-container");
+const drawBtn = document.getElementById("draw-button");
+var c = document.getElementsByTagName("canvas")[0];
+
+c.width = getComputedStyle(canvas).width.substring(0, getComputedStyle(canvas).width.length - 2); 
+c.height = getComputedStyle(canvas).height.substring(0, getComputedStyle(canvas).height.length - 2); 
 
 function getRandomColor(){
     let val1 = Math.floor((Math.random() * 255-180))+180;
@@ -62,10 +69,10 @@ socket.on("cursorJoined",(id)=>{
 
 socket.on("allCursors", (data)=>{
             
-    for (let key in data) {
+    for (let key in data[0]) {
         if(key === socket.id) continue;
 
-        const cursor = createCursor(key, true,data[key].name || "user", data[key].x, data[key].y)
+        const cursor = createCursor(key, true,data[0][key].name || "user", data[0][key].x, data[0][key].y)
                 
         canvas.appendChild(cursor)
     }
@@ -93,3 +100,10 @@ socket.on("cursorLeft",(id)=>{
     const targetCursor = document.getElementById(id)
     canvas.removeChild(targetCursor) 
 })
+
+
+
+
+
+
+

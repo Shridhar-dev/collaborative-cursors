@@ -23,13 +23,27 @@ body::after{
     font-weight: 700;
 }
 
-#canvas{
+#canvas-container{
     height: 1000vh;
     width: 1000vw;
     position: absolute;
     background-color: #f0f0f0;
     background-image: radial-gradient(rgba(0,0,0,0.1) 2px, #f0f0f0 2px);
     background-size: 40px 40px;
+}
+
+.toolbar{
+    position: absolute;
+    top: 100px;
+    background: white;
+    border-radius: 10px;
+    z-index: 8;
+}
+
+.toolbar > button{
+    background: transparent;
+    padding: 1rem;
+    border: none;
 }
 
 .cursor {

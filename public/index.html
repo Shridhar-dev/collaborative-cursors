@@ -7,9 +7,12 @@
     <title>Collab Cursors</title>
 </head>
 <body>
+    <div class="toolbar">
+        <button id="draw-button">✏️</button>
+    </div>
     <input id="username-input" placeholder="username"/>
-    <div id="canvas">
-        
+    <div id="canvas-container">
+        <canvas></canvas>
     </div>
     
     <svg style="display: none;" id="cursor-template" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +25,8 @@
         
     </svg>
     <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="./client/canvas.js"></script>
     <script type="module" src="./client/cursor.js"></script>
+    <script type="module" src="./client/states.js"></script>
+    <script defer type="module" src="./client/canvas.js"></script>
 </body>
 </html>
