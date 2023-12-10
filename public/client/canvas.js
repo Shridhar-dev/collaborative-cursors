@@ -1,4 +1,4 @@
-import { isDrawing } from "./states.js";
+import { currentColor, isDrawing } from "./states.js";
 const socket = io();
 
 dragElement(document.getElementById("canvas-container"));
@@ -46,7 +46,7 @@ var c = document.getElementsByTagName("canvas")[0];
 
 let ctx = c.getContext("2d");
 ctx.lineWidth = 3
-ctx.strokeStyle = "green";
+ctx.strokeStyle = currentColor;
 let isMouseDown = false;
 let prevX = 0;
 let prevY = 0;
@@ -61,7 +61,8 @@ document.getElementById("canvas-container").addEventListener("mousedown",(e)=>{
 
 document.getElementById("canvas-container").addEventListener("mousemove",(e)=>{
   if(isDrawing && isMouseDown) {
-    socket.emit('drawing',[[prevX,prevY],[Math.abs(e.offsetX), Math.abs(e.offsetY)]]);
+    socket.emit('drawing',[[prevX,prevY],[Math.abs(e.offsetX), Math.abs(e.offsetY)],currentColor]);
+    ctx.strokeStyle = currentColor;
     ctx.lineTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
     ctx.stroke()
     prevX = Math.abs(e.offsetX);
@@ -78,17 +79,17 @@ document.getElementById("canvas-container").addEventListener("mouseup",(e)=>{
 
 
 socket.on("drew",(data)=>{
-  console.log("Drew")
   ctx.beginPath()
+  ctx.strokeStyle = data[2];
   ctx.moveTo(data[0][0], data[0][1]);
   ctx.lineTo(data[1][0], data[1][1]);
   ctx.stroke()
 })
 
 socket.on("allCursors", (data)=>{
-  console.log(data)
   data[1].forEach(coords => {
     ctx.beginPath()
+    ctx.strokeStyle = coords[2];
     ctx.moveTo(coords[0][0], coords[0][1]);
     ctx.lineTo(coords[1][0], coords[1][1]);
     ctx.stroke()

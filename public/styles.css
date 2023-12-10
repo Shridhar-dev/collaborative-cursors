@@ -8,6 +8,7 @@ body{
     justify-content: center;
     align-items: center;
     cursor: none;
+    position: relative;
 }
 
 body::after{
@@ -33,16 +34,56 @@ body::after{
 }
 
 .toolbar{
-    position: absolute;
+    position: fixed;
     top: 100px;
-    background: white;
-    border-radius: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    cursor: none;
     z-index: 8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .toolbar > button{
     background: transparent;
-    padding: 1rem;
+    border: none;
+    background: white;
+    border-radius: 10px;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: none;
+}
+
+#draw-color{
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+}
+
+#draw-color {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+  }
+#draw-color::-webkit-color-swatch {
+    height: 1.5rem;
+    border-radius: 50%;
+    border: none;
+}
+#draw-color::-moz-color-swatch {
+    height: 1.5rem;
+    border-radius: 50%;
     border: none;
 }
 

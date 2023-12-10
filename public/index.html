@@ -7,11 +7,15 @@
     <title>Collab Cursors</title>
 </head>
 <body>
-    <div class="toolbar">
-        <button id="draw-button">✏️</button>
-    </div>
+    
     <input id="username-input" placeholder="username"/>
     <div id="canvas-container">
+        <div class="toolbar">
+            <button id="draw-button">✏️</button>
+            <button>
+                <input type="color" id="draw-color" value="#000000">
+            </button>
+        </div>
         <canvas></canvas>
     </div>
     
