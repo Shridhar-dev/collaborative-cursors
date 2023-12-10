@@ -1,4 +1,4 @@
-import { currentColor, isDrawing } from "./states.js";
+import { currentColor, invalidArea, isDrawing } from "./states.js";
 const socket = io();
 
 dragElement(document.getElementById("canvas-container"));
@@ -47,20 +47,21 @@ var c = document.getElementsByTagName("canvas")[0];
 let ctx = c.getContext("2d");
 ctx.lineWidth = 3
 ctx.strokeStyle = currentColor;
+ctx.lineCap = 'round';
 let isMouseDown = false;
 let prevX = 0;
 let prevY = 0;
+ctx.beginPath()
 document.getElementById("canvas-container").addEventListener("mousedown",(e)=>{
   if(!isDrawing) return;
   isMouseDown = true;
-  ctx.beginPath()
   prevX = Math.abs(e.offsetX);
   prevY = Math.abs(e.offsetY);
   ctx.moveTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
 })
 
 document.getElementById("canvas-container").addEventListener("mousemove",(e)=>{
-  if(isDrawing && isMouseDown) {
+  if(isDrawing && isMouseDown && !invalidArea) {
     socket.emit('drawing',[[prevX,prevY],[Math.abs(e.offsetX), Math.abs(e.offsetY)],currentColor]);
     ctx.strokeStyle = currentColor;
     ctx.lineTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
@@ -73,7 +74,6 @@ document.getElementById("canvas-container").addEventListener("mousemove",(e)=>{
 
 document.getElementById("canvas-container").addEventListener("mouseup",(e)=>{
   if(!isDrawing) return;
-  ctx.closePath()
   isMouseDown = false
 })
 
