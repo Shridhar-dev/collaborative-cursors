@@ -57,6 +57,7 @@ document.getElementById("canvas-container").addEventListener("mousedown",(e)=>{
   isMouseDown = true;
   prevX = Math.abs(e.offsetX);
   prevY = Math.abs(e.offsetY);
+  ctx.beginPath()
   ctx.moveTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
 })
 
