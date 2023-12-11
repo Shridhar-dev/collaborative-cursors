@@ -1,56 +1,26 @@
-import { currentColor, invalidArea, isDrawing } from "./states.js";
+import { currentColor, currentStroke, invalidArea, isDrawing } from "./states.js";
+import { dragElement } from "./utils.js";
 const socket = io();
 
 dragElement(document.getElementById("canvas-container"));
 
-function dragElement(elmnt) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  
-  elmnt.onmousedown = dragMouseDown;
-  
-
-  function dragMouseDown(e) {
-    if(isDrawing) return;
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
 
 var c = document.getElementsByTagName("canvas")[0];
 
 
 let ctx = c.getContext("2d");
-ctx.lineWidth = 3
+ctx.lineWidth = currentStroke
 ctx.strokeStyle = currentColor;
 ctx.lineCap = 'round';
+ctx.lineJoin = 'round'
 let isMouseDown = false;
 let prevX = 0;
 let prevY = 0;
+
+
+
+
+
 ctx.beginPath()
 document.getElementById("canvas-container").addEventListener("mousedown",(e)=>{
   if(!isDrawing) return;
@@ -59,12 +29,14 @@ document.getElementById("canvas-container").addEventListener("mousedown",(e)=>{
   prevY = Math.abs(e.offsetY);
   ctx.beginPath()
   ctx.moveTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
+  //drawImage("",Math.abs(e.offsetX), Math.abs(e.offsetY))
 })
 
 document.getElementById("canvas-container").addEventListener("mousemove",(e)=>{
   if(isDrawing && isMouseDown && !invalidArea) {
-    socket.emit('drawing',[[prevX,prevY],[Math.abs(e.offsetX), Math.abs(e.offsetY)],currentColor]);
+    socket.emit('drawing',[[prevX,prevY],[Math.abs(e.offsetX), Math.abs(e.offsetY)],currentColor, currentStroke]);
     ctx.strokeStyle = currentColor;
+    ctx.lineWidth = currentStroke;
     ctx.lineTo(Math.abs(e.offsetX), Math.abs(e.offsetY));
     ctx.stroke()
     prevX = Math.abs(e.offsetX);
@@ -82,6 +54,7 @@ document.getElementById("canvas-container").addEventListener("mouseup",(e)=>{
 socket.on("drew",(data)=>{
   ctx.beginPath()
   ctx.strokeStyle = data[2];
+  ctx.lineWidth = data[3];
   ctx.moveTo(data[0][0], data[0][1]);
   ctx.lineTo(data[1][0], data[1][1]);
   ctx.stroke()
@@ -91,8 +64,12 @@ socket.on("allCursors", (data)=>{
   data[1].forEach(coords => {
     ctx.beginPath()
     ctx.strokeStyle = coords[2];
+    ctx.lineWidth = coords[3];
     ctx.moveTo(coords[0][0], coords[0][1]);
     ctx.lineTo(coords[1][0], coords[1][1]);
     ctx.stroke()
   });
 })
+
+
+export { dragElement }

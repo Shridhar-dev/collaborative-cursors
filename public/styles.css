@@ -25,14 +25,17 @@ body::after{
 }
 
 #canvas-container{
-    height: 1000vh;
-    width: 1000vw;
+    height: 5000px;
+    width: 5000px;
     position: absolute;
     background-color: #f0f0f0;
     background-image: radial-gradient(rgba(0,0,0,0.1) 2px, #f0f0f0 2px);
     background-size: 40px 40px;
 }
-
+canvas {
+    position: absolute;
+    z-index: 7;
+}
 .toolbar{
     position: fixed;
     top: 100px;
@@ -56,6 +59,46 @@ body::after{
     justify-content: center;
     align-items: center;
     cursor: none;
+    position: relative;
+}
+
+.toolbar > div{
+    background: transparent;
+    border: none;
+    background: white;
+    border-radius: 10px;
+    height: 3rem;
+    padding: 0rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: none;
+}
+
+#gif-search{
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    background: white;
+    top: 110%;
+    left: 0%;
+    padding: 2rem;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+#gif-suggestions{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+#gif-input{
+    width: 20rem;
+    border: none;  
+    padding: 1rem 0.5rem;
+
 }
 
 #draw-color{
@@ -96,6 +139,13 @@ body::after{
     top: 10;
     left: 10;
     pointer-events: none;
+}
+
+.gif{
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    z-index: 6;
 }
 
 .cursor-info {

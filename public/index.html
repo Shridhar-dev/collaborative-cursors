@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--AIzaSyB39DQz2ZnpK0kBmPkS7e4tOWMH-sZnIs8-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,6 +16,18 @@
             <button>
                 <input type="color" id="draw-color" value="#000000">
             </button>
+            <div>
+                <input type="range" id="stroke-width" name="stroke-width" min="1" max="10" />
+            </div>
+            <button id="gif-button">
+                ✨
+                <div id="gif-search">
+                    <input id="gif-input" placeholder="Search for Gifs"/>
+                    <div id="gif-suggestions">
+
+                    </div>
+                </div>
+            </button>
         </div>
         <canvas></canvas>
     </div>
@@ -30,7 +43,7 @@
     </svg>
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="./client/cursor.js"></script>
-    <script type="module" src="./client/states.js"></script>
     <script defer type="module" src="./client/canvas.js"></script>
+    <script type="module" src="./client/states.js"></script>
 </body>
 </html>
