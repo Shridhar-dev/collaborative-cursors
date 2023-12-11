@@ -56,7 +56,7 @@ function addImageToDOM(src, xoff, yoff){
   }
 
 gifInput.addEventListener("input",async(e) => { 
-    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=AIzaSyB39DQz2ZnpK0kBmPkS7e4tOWMH-sZnIs8&limit=6`);
+    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=API_KEY&limit=6`);
     const jsonData = await data.json();
     document.getElementById("gif-suggestions").innerHTML=""
     jsonData.results.forEach(element => {
