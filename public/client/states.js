@@ -14,7 +14,7 @@ let currentStroke = 1;
 let isDrawing = false;
 let invalidArea = false;
 let preventDrag = false;
-
+let apiKey = "";
 strokeInput.value = 1;
 
 gifBtn.addEventListener("click",() => { 
@@ -64,7 +64,6 @@ function addImageToDOM(src, xoff, yoff, id, fromSearch){
     socket.on("allCursors",(data)=>{
         if(!data[2]) return;
         let obj = data[2];
-        console.log(obj)
         for (let key in obj) {
             addImageToDOM(obj[key].url, obj[key].x, obj[key].y, key, false)
             
@@ -80,8 +79,10 @@ function addImageToDOM(src, xoff, yoff, id, fromSearch){
         gif.style.left = data.x+"px";
     })
 
+    socket.on("key",(key)=>apiKey=key)
+
 gifInput.addEventListener("input",async(e) => { 
-    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=${process.env.TENOR_API_KEY}&limit=6`);
+    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=${apiKey}&limit=6`);
     const jsonData = await data.json();
     document.getElementById("gif-suggestions").innerHTML=""
     jsonData.results.forEach(element => {

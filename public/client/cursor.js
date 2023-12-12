@@ -53,7 +53,6 @@ function createCursor(id, other, name="user", x ,y) {
 
 socket.on("connect",()=>{
     if(myParam){
-        console.log(myParam)
         context.clearRect(0, 0, c.width, c.height)
         socket.emit("joinRoom",myParam);
         document.getElementById("room-id").innerText = myParam
