@@ -1,6 +1,7 @@
+import { socket } from "./cursor.js";
 import { currentColor, currentStroke, invalidArea, isDrawing } from "./states.js";
 import { dragElement } from "./utils.js";
-const socket = io();
+
 
 dragElement(document.getElementById("canvas-container"));
 
@@ -61,6 +62,7 @@ socket.on("drew",(data)=>{
 })
 
 socket.on("allCursors", (data)=>{
+  if(!data[1]) return;
   data[1].forEach(coords => {
     ctx.beginPath()
     ctx.strokeStyle = coords[2];

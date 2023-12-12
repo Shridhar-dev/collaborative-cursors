@@ -7,8 +7,12 @@
     <title>Collab Cursors</title>
 </head>
 <body>
-    
-    <input id="username-input" placeholder="username"/>
+    <div id="room-info-box">
+        <p>Room 🏡</p>
+        <p id="room-id"></p>
+        <hr/>
+        <input id="username-input" placeholder="change username"/>
+    </div>
     <div id="canvas-container">
         <div class="toolbar">
             <button id="draw-button">✏️</button>
@@ -43,6 +47,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="./client/cursor.js"></script>
     <script defer type="module" src="./client/canvas.js"></script>
-    <script type="module" src="./client/states.js"></script>
+    <script defer type="module" src="./client/states.js"></script>
 </body>
 </html>

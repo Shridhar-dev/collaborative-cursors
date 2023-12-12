@@ -1,3 +1,4 @@
+import { socket } from "./cursor.js";
 import { dragElement } from "./utils.js";
 
 const drawBtn = document.getElementById("draw-button");
@@ -32,31 +33,55 @@ function drawImage(src){
     gif.src = src;
     gif.style.width="46%";
     gif.height=100;
+    let id = socket.id+Math.random()*10000;
     gif.addEventListener("click",(e)=>{
         gifSearch.style.visibility = "hidden" 
         gifSearch.style.opacity = 0 ;
         const rect = document.getElementById("canvas-container").getBoundingClientRect();
         const xoff = e.clientX - rect.left;
         const yoff = e.clientY - rect.top;
-        addImageToDOM(src, xoff, yoff) 
+        addImageToDOM(src, xoff, yoff, id, true) 
     })
     document.getElementById("gif-suggestions").appendChild(gif)
 }
 
-function addImageToDOM(src, xoff, yoff){
+function addImageToDOM(src, xoff, yoff, id, fromSearch){
+    
     var gif = document.createElement("img");
     gif.classList = "gif"
+    gif.id = id
     gif.src = src;
     gif.style.top = yoff+"px";
     gif.style.left = xoff+"px";
-    dragElement(gif)
+    dragElement(gif, (x,y)=>socket.emit("gifMoved", {id:id, url:src ,x:x, y:y}))
     gif.addEventListener("mouseenter",()=>{ invalidArea = true })
     gif.addEventListener("mouseleave",()=>{ invalidArea = false })
+    
     document.getElementById("canvas-container").insertBefore(gif, document.getElementById("canvas-container").firstChild)
-  }
+    if(fromSearch)socket.emit("gifAdded", {id:id, url:src ,x:xoff, y:yoff});
+}
+
+    socket.on("allCursors",(data)=>{
+        if(!data[2]) return;
+        let obj = data[2];
+        console.log(obj)
+        for (let key in obj) {
+            addImageToDOM(obj[key].url, obj[key].x, obj[key].y, key, false)
+            
+        }
+    })
+
+    socket.on("gifAddedToDOM",(data)=>{
+        addImageToDOM(data.url, data.x, data.y, data.id, false)
+    })
+    socket.on("gifMovedToDOM",(data)=>{
+        let gif = document.getElementById(data.id);
+        gif.style.top = data.y+"px";
+        gif.style.left = data.x+"px";
+    })
 
 gifInput.addEventListener("input",async(e) => { 
-    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=API_KEY&limit=6`);
+    const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=AIzaSyB39DQz2ZnpK0kBmPkS7e4tOWMH-sZnIs8&limit=6`);
     const jsonData = await data.json();
     document.getElementById("gif-suggestions").innerHTML=""
     jsonData.results.forEach(element => {

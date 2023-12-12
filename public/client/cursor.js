@@ -1,5 +1,3 @@
-import { isDrawing } from "./states.js";
-
 const socket = io();
 const canvas = document.getElementById("canvas-container");
 const drawBtn = document.getElementById("draw-button");
@@ -7,6 +5,7 @@ var c = document.getElementsByTagName("canvas")[0];
 
 c.width = getComputedStyle(canvas).width.substring(0, getComputedStyle(canvas).width.length - 2); 
 c.height = getComputedStyle(canvas).height.substring(0, getComputedStyle(canvas).height.length - 2); 
+const context = c.getContext('2d');
 
 function getRandomColor(){
     let val1 = Math.floor((Math.random() * 255-180))+180;
@@ -17,6 +16,9 @@ function getRandomColor(){
         val1,val2,val3
     };
 }
+
+const urlParams = new URLSearchParams(window.location.search);
+const myParam = urlParams.get('room');
 
 function createCursor(id, other, name="user", x ,y) {
     const iconContainer = document.createElement("div");
@@ -50,6 +52,15 @@ function createCursor(id, other, name="user", x ,y) {
 }
 
 socket.on("connect",()=>{
+    if(myParam){
+        console.log(myParam)
+        context.clearRect(0, 0, c.width, c.height)
+        socket.emit("joinRoom",myParam);
+        document.getElementById("room-id").innerText = myParam
+    }
+    else{
+        document.getElementById("room-id").innerText = socket.id;
+    }
     const cursor = createCursor(socket.id);
     canvas.onmousemove = (e) =>{
         cursor.style.top = Math.abs(e.clientY) + 'px';
@@ -96,6 +107,7 @@ document.getElementById("username-input").oninput = (e) =>{
     socket.emit('cursorNameChange',e.target.value);
 }
 
+
 socket.on("cursorLeft",(id)=>{
     const targetCursor = document.getElementById(id)
     canvas.removeChild(targetCursor) 
@@ -106,4 +118,4 @@ socket.on("cursorLeft",(id)=>{
 
 
 
-
+export { socket }
