@@ -1,6 +1,6 @@
 import { isDrawing, preventDrag } from "./states.js";
 
-function dragElement(elmnt) {
+function dragElement(elmnt, onDragEnd=()=>{}) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     
     elmnt.onmousedown = dragMouseDown;
@@ -34,6 +34,7 @@ function dragElement(elmnt) {
   
     function closeDragElement() {
       // stop moving when mouse button is released:
+      onDragEnd((elmnt.offsetLeft - pos1), (elmnt.offsetTop - pos2))
       document.onmouseup = null;
       document.onmousemove = null;
     }
