@@ -2,6 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path'
 import { fileURLToPath } from 'url';
+import 'dotenv/config'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -111,9 +112,7 @@ io.on('connection', (socket) => {
         name
       }
     })
-
-    
-
+    socket.emit("key",process.env.TENOR_API_KEY)
     socket.to(cursors[socket.id].currentRoom).emit("allCursors", [cursors,polygons[cursors[socket.id].currentRoom],gifs[cursors[socket.id].currentRoom]])
 
     socket.on("joinRoom",(id)=>{
