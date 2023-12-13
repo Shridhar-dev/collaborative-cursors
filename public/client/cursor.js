@@ -51,6 +51,16 @@ function createCursor(id, other, name="user", x ,y) {
     return iconContainer;
 }
 
+function createTooltip(){
+    const p = document.getElementById("tooltip");
+    p.style.visibility = "visible";
+    p.style.opacity = 1;
+    setTimeout(() => { 
+        p.style.visibility = "hidden";
+        p.style.opacity = 0; 
+    }, 2000);
+}
+
 socket.on("connect",()=>{
     if(myParam){
         context.clearRect(0, 0, c.width, c.height)
@@ -60,6 +70,12 @@ socket.on("connect",()=>{
     else{
         document.getElementById("room-id").innerText = socket.id;
     }
+
+    document.getElementById("room-info-box").onclick = () => {
+        navigator.clipboard.writeText(window.location.origin + "?room=" +document.getElementById("room-id").innerText);
+        createTooltip()
+    }
+    
     const cursor = createCursor(socket.id);
     canvas.onmousemove = (e) =>{
         cursor.style.top = Math.abs(e.clientY) + 'px';
@@ -77,13 +93,10 @@ socket.on("cursorJoined",(id)=>{
     canvas.appendChild(cursor)
 })
 
-socket.on("allCursors", (data)=>{
-            
+socket.on("allCursors", (data)=>{        
     for (let key in data[0]) {
         if(key === socket.id) continue;
-
         const cursor = createCursor(key, true,data[0][key].name || "user", data[0][key].x, data[0][key].y)
-                
         canvas.appendChild(cursor)
     }
 })
@@ -101,18 +114,15 @@ socket.on("cursorNameChanged",(data)=>{
     targetCursor.firstChild.innerText = data.name   
 })
 
-document.getElementById("username-input").oninput = (e) =>{
-    document.getElementById(socket.id).firstChild.innerText = e.target.value
-    socket.emit('cursorNameChange',e.target.value);
-}
-
-
 socket.on("cursorLeft",(id)=>{
     const targetCursor = document.getElementById(id)
     canvas.removeChild(targetCursor) 
 })
 
-
+document.getElementById("username-input").oninput = (e) =>{
+    document.getElementById(socket.id).firstChild.innerText = e.target.value
+    socket.emit('cursorNameChange',e.target.value);
+}
 
 
 
