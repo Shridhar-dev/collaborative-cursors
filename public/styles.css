@@ -85,6 +85,7 @@ canvas {
     padding: 2rem;
     font-size: 1rem;
     font-family: sans-serif;
+    cursor: pointer;
 }
 #room-info-box > p {
     margin: 0.2rem;

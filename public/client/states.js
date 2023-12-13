@@ -46,7 +46,6 @@ function drawImage(src){
 }
 
 function addImageToDOM(src, xoff, yoff, id, fromSearch){
-    
     var gif = document.createElement("img");
     gif.classList = "gif"
     gif.id = id
@@ -61,25 +60,25 @@ function addImageToDOM(src, xoff, yoff, id, fromSearch){
     if(fromSearch)socket.emit("gifAdded", {id:id, url:src ,x:xoff, y:yoff});
 }
 
-    socket.on("allCursors",(data)=>{
-        if(!data[2]) return;
-        let obj = data[2];
-        for (let key in obj) {
-            addImageToDOM(obj[key].url, obj[key].x, obj[key].y, key, false)
+socket.on("allCursors",(data)=>{
+    if(!data[2]) return;
+    let obj = data[2];
+    for (let key in obj) {
+        addImageToDOM(obj[key].url, obj[key].x, obj[key].y, key, false)
             
-        }
-    })
+    }
+})
 
-    socket.on("gifAddedToDOM",(data)=>{
-        addImageToDOM(data.url, data.x, data.y, data.id, false)
-    })
-    socket.on("gifMovedToDOM",(data)=>{
-        let gif = document.getElementById(data.id);
-        gif.style.top = data.y+"px";
-        gif.style.left = data.x+"px";
-    })
+socket.on("gifAddedToDOM",(data)=>{
+    addImageToDOM(data.url, data.x, data.y, data.id, false)
+})
+socket.on("gifMovedToDOM",(data)=>{
+    let gif = document.getElementById(data.id);
+    gif.style.top = data.y+"px";
+    gif.style.left = data.x+"px";
+})
 
-    socket.on("key",(key)=>apiKey=key)
+socket.on("key",(key)=>apiKey=key)
 
 gifInput.addEventListener("input",async(e) => { 
     const data = await fetch(`https://tenor.googleapis.com/v2/search?q=${e.target.value}&key=${apiKey}&limit=6`);
