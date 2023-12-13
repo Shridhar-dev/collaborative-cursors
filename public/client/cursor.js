@@ -51,6 +51,16 @@ function createCursor(id, other, name="user", x ,y) {
     return iconContainer;
 }
 
+function createTooltip(){
+    const p = document.getElementById("tooltip");
+    p.style.visibility = "visible";
+    p.style.opacity = 1;
+    setTimeout(() => { 
+        p.style.visibility = "hidden";
+        p.style.opacity = 0; 
+    }, 2000);
+}
+
 socket.on("connect",()=>{
     if(myParam){
         context.clearRect(0, 0, c.width, c.height)
@@ -62,7 +72,8 @@ socket.on("connect",()=>{
     }
 
     document.getElementById("room-info-box").onclick = () => {
-        navigator.clipboard.writeText(document.getElementById("room-id").innerText);
+        navigator.clipboard.writeText(window.location.origin + "?room=" +document.getElementById("room-id").innerText);
+        createTooltip()
     }
     
     const cursor = createCursor(socket.id);

@@ -92,6 +92,21 @@ canvas {
     padding: 0rem;
 }
 
+#tooltip{
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.2s;
+}
+
 #room-id{
     font-size: 1rem;
     font-family: sans-serif;
