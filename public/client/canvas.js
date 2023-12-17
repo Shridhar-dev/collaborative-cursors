@@ -8,18 +8,21 @@ dragElement(document.getElementById("canvas-container"));
 
 var c = document.getElementsByTagName("canvas")[0];
 
-
-let ctx = c.getContext("2d");
+let ctx = c.getContext ("2d");
+ctx.willReadFrequently = true
 ctx.lineWidth = currentStroke
 ctx.strokeStyle = currentColor;
 ctx.lineCap = 'round';
 ctx.lineJoin = 'round'
+
 let isMouseDown = false;
 let prevX = 0;
 let prevY = 0;
 
 
 
+
+let offscreenCanvases = [(new OffscreenCanvas(c.width, c.height)).getContext("2d")]
 
 
 ctx.beginPath()
@@ -48,7 +51,17 @@ document.getElementById("canvas-container").addEventListener("mousemove",(e)=>{
 
 document.getElementById("canvas-container").addEventListener("mouseup",(e)=>{
   if(!isDrawing) return;
-  isMouseDown = false
+  isMouseDown = false;
+  if(invalidArea) return;
+    //const myWorker = new Worker("./client/worker.js");
+    // myWorker.postMessage("Hi");
+    let destinationCanvas = new OffscreenCanvas(c.width, c.height);
+    let destinationCtx = destinationCanvas.getContext('2d', {willReadFrequently:true});
+    var image = ctx.getImageData(0, 0, 4000, 4000);
+    destinationCtx.putImageData(image, 0, 0);
+    offscreenCanvases.push(destinationCtx)
+    console.log(offscreenCanvases)
+  
 })
 
 
@@ -73,5 +86,16 @@ socket.on("allCursors", (data)=>{
   });
 })
 
+
+// for this to work the edits from server should be drawn on diff canvas
+
+
+document.getElementById("undo-button").onclick = async() => {
+  console.log(offscreenCanvases.length, "HI")
+  if(offscreenCanvases.length === 0 || offscreenCanvases.length === 1) return;
+  var image = offscreenCanvases[offscreenCanvases.length-2].getImageData(0, 0, 4000, 4000);
+  ctx.putImageData(image, 0, 0);
+  offscreenCanvases.pop()
+}
 
 export { dragElement }

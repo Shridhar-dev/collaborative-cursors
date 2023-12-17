@@ -5,7 +5,7 @@ var c = document.getElementsByTagName("canvas")[0];
 
 c.width = getComputedStyle(canvas).width.substring(0, getComputedStyle(canvas).width.length - 2); 
 c.height = getComputedStyle(canvas).height.substring(0, getComputedStyle(canvas).height.length - 2); 
-const context = c.getContext('2d');
+const context = c.getContext('2d', {willReadFrequently: false});
 
 function getRandomColor(){
     let val1 = Math.floor((Math.random() * 255-180))+180;
