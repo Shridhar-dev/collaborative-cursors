@@ -7,7 +7,7 @@ RUN corepack enable
 
 COPY package.json .npmrc ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 COPY . .
 
